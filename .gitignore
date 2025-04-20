@@ -1,0 +1,7 @@
+/.phpunit.cache
+/vendor
+/.fleet
+/.idea
+/.nova
+/.vscode
+/.zed
