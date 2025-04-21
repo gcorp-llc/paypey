@@ -21,49 +21,45 @@
 ### Installation
 1. Install via Composer:
    ```bash
-   composer require your-vendor/paypey
-   ```
+     composer require gcorpllc/paypey
+    ```
 2. Publish the configuration file:
    ```bash
-   php artisan vendor:publish --provider="YourVendor\Paypey\PaypeyServiceProvider"
+   php artisan vendor:publish --provider="gcorpllc\Paypey\PaypeyServiceProvider"
    ```
-   This creates a `config/paypey.php` file.
+This creates a `config/paypey.php` file.
 
 
-### Configuration
-Edit `config/paypey.php` to set up your gateways. Example:
-
+### Config
+Edit the `config/paypey.php` file to set the ports. Example:
 ```php
-return [
     'default_gateway' => env('PAYPEY_DEFAULT_GATEWAY', 'zarinpal'),
+    'callbackUrl' =>  env('CALLBACK_URL', '/callback'),
+    'sandbox' => env('PAYPEY_SANDBOX', true),
     'gateways' => [
         'zarinpal' => [
-            'merchant_id' => env('ZARINPAL_MERCHANT_ID', ''),
-            'sandbox' => env('ZARINPAL_SANDBOX', false),
-        ],
-        'mellat' => [
-            'terminal_id' => env('MELLAT_TERMINAL_ID', ''),
-            'username' => env('MELLAT_USERNAME', ''),
-            'password' => env('MELLAT_PASSWORD', ''),
+            'sandbox' => env('ZARINPAL_SANDBOX', false),// can be normal, sandbox, zaringate
+            'merchantId' =>  env('ZARINPAL_MERCHANT_ID', 'zarinpal'),
+            'description' => 'payment using zarinpal',
+            'currency' => env('CURRENCY', 'T'), //Can be R, T (Rial, Toman)
         ],
     ],
-];
 ```
 
 Add to your `.env` file:
 
 ```env
-PAYPEY_DEFAULT_GATEWAY=zarinpal
-ZARINPAL_MERCHANT_ID=your-merchant-id
-ZARINPAL_SANDBOX=true
+PAYPEY_DEFAULT_GATEWAY="zarinpal"
+CALLBACK_URL="your-merchant-id"
+PAYPEY_SANDBOX=true
 ```
 
 ### Usage
 #### Initiating a Payment
 ```php
-use YourVendor\Paypey\Facades\Paypey;
+use Gcorpllc\Paypey\Facades\Paypey;
 
-$payment = Paypey::gateway('zarinpal')
+$payment = Paypey::driver('zarinpal')
     ->amount(10000) // Amount in IRR
     ->callbackUrl(route('payment.callback'))
     ->purchase();
@@ -77,9 +73,9 @@ if ($payment->isSuccessful()) {
 
 #### Verifying a Payment
 ```php
-use YourVendor\Paypey\Facades\Paypey;
+use Gcorpllc\Paypey\Facades\Paypey;
 
-$result = Paypey::gateway('zarinpal')->verify();
+$result = Paypey::driver('zarinpal')->verify();
 
 if ($result->isSuccessful()) {
     $transactionId = $result->getTransactionId();
@@ -106,13 +102,6 @@ Clone the repository and run:
 composer install
 ./vendor/bin/phpunit
 ```
-
-### Contributing
-1. Fork the repository.
-2. Create a feature branch (`git checkout -b feature/your-feature`).
-3. Commit changes (`git commit -m 'Add feature'`).
-4. Push to the branch (`git push origin feature/your-feature`).
-5. Open a pull request.
 
 ### License
 Licensed under the [MIT License](LICENSE.md).
@@ -142,53 +131,47 @@ For issues, open a ticket on [GitHub](https://github.com/your-vendor/paypey/issu
 ### نصب
 1. پکیج را از طریق Composer نصب کنید:
    ```bash
-   composer require your-vendor/paypey
+      composer require gcorpllc/paypey
    ```
 2. فایل پیکربندی را منتشر کنید:
    ```bash
-   php artisan vendor:publish --provider="YourVendor\Paypey\PaypeyServiceProvider"
+   php artisan vendor:publish --provider="Gcorpllc\Paypey\PaypeyServiceProvider"
    ```
    این دستور فایل `config/paypey.php` را ایجاد می‌کند.
-3. (اختیاری) در صورت نیاز، migrations را اجرا کنید:
-   ```bash
-   php artisan migrate
-   ```
+
 
 ### پیکربندی
 فایل `config/paypey.php` را برای تنظیم درگاه‌ها ویرایش کنید. نمونه:
 
 ```php
-return [
     'default_gateway' => env('PAYPEY_DEFAULT_GATEWAY', 'zarinpal'),
+    'callbackUrl' =>  env('CALLBACK_URL', '/callback'),
+    'sandbox' => env('PAYPEY_SANDBOX', true),
     'gateways' => [
         'zarinpal' => [
-            'merchant_id' => env('ZARINPAL_MERCHANT_ID', ''),
-            'sandbox' => env('ZARINPAL_SANDBOX', false),
-        ],
-        'mellat' => [
-            'terminal_id' => env('MELLAT_TERMINAL_ID', ''),
-            'username' => env('MELLAT_USERNAME', ''),
-            'password' => env('MELLAT_PASSWORD', ''),
+            'sandbox' => env('ZARINPAL_SANDBOX', false),// can be normal, sandbox, zaringate
+            'merchantId' =>  env('ZARINPAL_MERCHANT_ID', 'zarinpal'),
+            'description' => 'payment using zarinpal',
+            'currency' => env('CURRENCY', 'T'), //Can be R, T (Rial, Toman)
         ],
     ],
-];
 ```
 
 در فایل `.env` موارد زیر را اضافه کنید:
 
 ```env
-PAYPEY_DEFAULT_GATEWAY=zarinpal
-ZARINPAL_MERCHANT_ID=your-merchant-id
-ZARINPAL_SANDBOX=true
+PAYPEY_DEFAULT_GATEWAY="zarinpal"
+CALLBACK_URL="your-merchant-id"
+PAYPEY_SANDBOX=true
 ```
 
 ### استفاده
 #### شروع پرداخت
 ```php
-use YourVendor\Paypey\Facades\Paypey;
+use Gcorpllc\Paypey\Facades\Paypey;
 
-$payment = Paypey::gateway('zarinpal')
-    ->amount(10000) // مبلغ به ریال
+$payment = Paypey::driver('zarinpal')
+    ->amount(10000) // Amount in IRR
     ->callbackUrl(route('payment.callback'))
     ->purchase();
 
@@ -203,7 +186,7 @@ if ($payment->isSuccessful()) {
 ```php
 use YourVendor\Paypey\Facades\Paypey;
 
-$result = Paypey::gateway('zarinpal')->verify();
+$result = Paypey::driver('zarinpal')->verify();
 
 if ($result->isSuccessful()) {
     $transactionId = $result->getTransactionId();
@@ -213,16 +196,6 @@ if ($result->isSuccessful()) {
 }
 ```
 
-### درگاه‌های پشتیبانی‌شده
-- **زرین‌پال**: پشتیبانی از حالت sandbox و production.
-- **ملت**: تراکنش‌های امن با استفاده از terminal ID.
-- درگاه‌های بیشتر به‌زودی اضافه خواهند شد.
-
-### مدیریت خطاها
-برای دسترسی به پیام خطا:
-```php
-$errorMessage = $payment->getErrorMessage();
-```
 
 ### تست
 برای اجرای تست‌ها، مخزن را کلون کرده و دستورات زیر را اجرا کنید:
@@ -230,13 +203,6 @@ $errorMessage = $payment->getErrorMessage();
 composer install
 ./vendor/bin/phpunit
 ```
-
-### مشارکت
-1. مخزن را fork کنید.
-2. یک شاخه جدید بسازید (`git checkout -b feature/your-feature`).
-3. تغییرات را ثبت کنید (`git commit -m 'Add feature'`).
-4. شاخه را push کنید (`git push origin feature/your-feature`).
-5. یک pull request باز کنید.
 
 ### لایسنس
 این پکیج تحت [لایسنس MIT](LICENSE.md) منتشر شده است.
