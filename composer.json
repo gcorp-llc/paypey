@@ -2,7 +2,7 @@
     "name": "gcorpllc/paypey",
     "description": "The Paypey package is a simple and powerful solution for connecting to various payment gateways in Laravel projects.",
     "type": "package",
-    "version": "v1.0.0",
+    "version": "v1.0.1",
     "license": "MIT",
     "autoload": {
         "psr-4": {
