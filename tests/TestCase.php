@@ -1,10 +1,16 @@
 <?php
 
-namespace Tests;
+namespace Gcorpllc\Paypey\Tests;
 
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Orchestra\Testbench\TestCase as Orchestra;
+use Gcorpllc\Paypey\Providers\PaypeyServiceProvider;
 
-abstract class TestCase extends BaseTestCase
+abstract class TestCase extends Orchestra
 {
-    //
+    protected function getPackageProviders($app)
+    {
+        return [
+            PaypeyServiceProvider::class,
+        ];
+    }
 }

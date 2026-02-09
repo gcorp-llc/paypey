@@ -2,11 +2,16 @@
     "name": "gcorpllc/paypey",
     "description": "The Paypey package is a simple and powerful solution for connecting to various payment gateways in Laravel projects.",
     "type": "package",
-    "version": "v1.0.1",
+    "version": "v1.1.0",
     "license": "MIT",
     "autoload": {
         "psr-4": {
             "Gcorpllc\\Paypey\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Gcorpllc\\Paypey\\Tests\\": "tests/"
         }
     },
     "extra": {
@@ -21,12 +26,18 @@
             "name": "Dr Manhattan"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
-        "php": ">=8.0"
+        "php": ">=8.2",
+        "illuminate/support": "^10.0|^11.0",
+        "illuminate/http": "^10.0|^11.0",
+        "stripe/stripe-php": "^13.0",
+        "paypal/paypal-checkout-sdk": "^1.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.0|^9.0",
+        "phpunit/phpunit": "^10.0"
     },
     "suggest": {
-        "filament/filament": "3.x-dev"
+        "filament/filament": "^3.0|^4.0|^5.0"
     }
-
 }
