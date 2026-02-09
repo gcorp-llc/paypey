@@ -1,15 +1,12 @@
 <?php
 
-namespace Tests\Unit;
+namespace Gcorpllc\Paypey\Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Gcorpllc\Paypey\Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     */
-    public function test_that_true_is_true(): void
+    public function test_true_is_true()
     {
         $this->assertTrue(true);
     }

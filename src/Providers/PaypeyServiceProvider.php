@@ -25,10 +25,21 @@ class PaypeyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->loadTranslationsFrom(__DIR__.'/../../lang', 'paypey');
-        $this->mergeConfigFrom(__DIR__.'/../../config/paypey.php', 'paypey');
+        $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'paypey');
+        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+
         if ($this->app->runningInConsole()) {
-            $this->publishes([__DIR__.'/../../lang' => $this->app->langPath('vendor/paypey'),], 'paypey-translations');
+            $this->publishes([
+                __DIR__ . '/../../config/paypey.php' => config_path('paypey.php'),
+            ], 'paypey-config');
+
+            $this->publishes([
+                __DIR__ . '/../../lang' => $this->app->langPath('vendor/paypey'),
+            ], 'paypey-translations');
+
+            $this->publishes([
+                __DIR__ . '/../../database/migrations/' => database_path('migrations'),
+            ], 'paypey-migrations');
         }
-        $this->publishes([__DIR__.'/../../config/paypey.php' => config_path('paypey.php'),], 'paypey-config');    }
+    }
 }
