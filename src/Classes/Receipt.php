@@ -2,19 +2,20 @@
 
 namespace Gcorpllc\Paypey\Classes;
 
-class Receipt
-{
-    protected bool $success;
-    protected ?string $transactionId = null;
-    protected ?string $referenceId = null;
-    protected ?string $message = null;
-    protected ?string $cardPan = null;
-    protected array $details = [];
+use Gcorpllc\Paypey\Contracts\ReceiptInterface;
 
-    public function __construct(bool $success, ?string $transactionId = null)
-    {
-        $this->success = $success;
-        $this->transactionId = $transactionId;
+class Receipt implements ReceiptInterface
+{
+    public function __construct(
+        protected bool $success,
+        protected string|int|null $transactionId,
+        protected string|int|null $refId,
+        protected string $gateway,
+        protected int|float $amount,
+        protected ?string $cardNumber = null,
+        protected ?string $message = null,
+        protected array $rawResponse = []
+    ) {
     }
 
     public function isSuccessful(): bool
@@ -22,26 +23,29 @@ class Receipt
         return $this->success;
     }
 
-    public function getTransactionId(): ?string
+    public function getTransactionId(): string|int|null
     {
         return $this->transactionId;
     }
 
-    public function referenceId(string $id): self
+    public function getRefId(): string|int|null
     {
-        $this->referenceId = $id;
-        return $this;
+        return $this->refId;
     }
 
-    public function getReferenceId(): ?string
+    public function getCardNumber(): ?string
     {
-        return $this->referenceId;
+        return $this->cardNumber;
     }
 
-    public function message(string $message): self
+    public function getGateway(): string
     {
-        $this->message = $message;
-        return $this;
+        return $this->gateway;
+    }
+
+    public function getAmount(): int|float
+    {
+        return $this->amount;
     }
 
     public function getMessage(): ?string
@@ -49,25 +53,22 @@ class Receipt
         return $this->message;
     }
 
-    public function cardPan(string $cardPan): self
+    public function getRawResponse(): array
     {
-        $this->cardPan = $cardPan;
-        return $this;
+        return $this->rawResponse;
     }
 
-    public function getCardPan(): ?string
+    public function toArray(): array
     {
-        return $this->cardPan;
-    }
-
-    public function details(array $details): self
-    {
-        $this->details = $details;
-        return $this;
-    }
-
-    public function getDetails(): array
-    {
-        return $this->details;
+        return [
+            'success' => $this->success,
+            'transaction_id' => $this->transactionId,
+            'ref_id' => $this->refId,
+            'card_number' => $this->cardNumber,
+            'gateway' => $this->gateway,
+            'amount' => $this->amount,
+            'message' => $this->message,
+            'raw_response' => $this->rawResponse,
+        ];
     }
 }
