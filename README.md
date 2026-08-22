@@ -1,223 +1,201 @@
+# Paypey - Laravel Payment Gateway Aggregator
 
-# Paypey - Laravel Payment Gateway Package
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/gcorpllc/paypey.svg?style=flat-square)](https://packagist.org/packages/gcorpllc/paypey)
+[![Total Downloads](https://img.shields.io/packagist/dt/gcorpllc/paypey.svg?style=flat-square)](https://packagist.org/packages/gcorpllc/paypey)
+[![License](https://img.shields.io/packagist/l/gcorpllc/paypey.svg?style=flat-square)](LICENSE)
 
-## English
-
-### Introduction
-**Paypey** is a Laravel package designed to simplify integration with various Iranian payment gateways. It offers a clean and flexible API to handle payment requests, verifications, and callbacks seamlessly.
-
-### Features
-- Supports multiple Iranian payment gateways (e.g., Zarinpal, Mellat, Saman).
-- Simple and intuitive API for initiating and verifying transactions.
-- Configurable gateway selection.
-- Robust error handling.
-- Compatible with Laravel 8.x, 9.x, and 10.x.
-
-### Requirements
-- PHP >= 8.0
-- Laravel >= 8.0
-- Composer
-
-### Installation
-1. Install via Composer:
-   ```bash
-     composer require gcorpllc/paypey
-    ```
-2. Publish the configuration file:
-   ```bash
-   php artisan vendor:publish --provider="gcorpllc\Paypey\PaypeyServiceProvider"
-   ```
-This creates a `config/paypey.php` file.
-
-
-### Config
-Edit the `config/paypey.php` file to set the ports. Example:
-```php
-    'default_gateway' => env('PAYPEY_DEFAULT_GATEWAY', 'zarinpal'),
-    'callbackUrl' =>  env('CALLBACK_URL', '/callback'),
-    'sandbox' => env('PAYPEY_SANDBOX', true),
-    'gateways' => [
-        'zarinpal' => [
-            'sandbox' => env('ZARINPAL_SANDBOX', false),// can be normal, sandbox, zaringate
-            'merchantId' =>  env('ZARINPAL_MERCHANT_ID', 'zarinpal'),
-            'description' => 'payment using zarinpal',
-            'currency' => env('CURRENCY', 'T'), //Can be R, T (Rial, Toman)
-        ],
-    ],
-```
-
-Add to your `.env` file:
-
-```env
-PAYPEY_DEFAULT_GATEWAY="zarinpal"
-CALLBACK_URL="your-merchant-id"
-PAYPEY_SANDBOX=true
-```
-
-### Usage
-#### Initiating a Payment
-```php
-use Gcorpllc\Paypey\Facades\Paypey;
-
-$payment = Paypey::driver('zarinpal')
-    ->amount(10000) // Amount in IRR
-    ->callbackUrl(route('payment.callback'))
-    ->purchase();
-
-if ($payment->isSuccessful()) {
-    return redirect($payment->getPaymentUrl());
-} else {
-    return response()->json(['error' => $payment->getErrorMessage()]);
-}
-```
-
-#### Verifying a Payment
-```php
-use Gcorpllc\Paypey\Facades\Paypey;
-
-$result = Paypey::driver('zarinpal')->verify();
-
-if ($result->isSuccessful()) {
-    $transactionId = $result->getTransactionId();
-    return response()->json(['message' => 'Payment verified!', 'transaction_id' => $transactionId]);
-} else {
-    return response()->json(['error' => $result->getErrorMessage()]);
-}
-```
-
-### Supported Gateways
-- **Zarinpal**: Sandbox and production modes.
-- **Mellat**: Secure transactions with terminal ID.
-- More gateways to be added soon.
-
-### Error Handling
-Access error messages via:
-```php
-$errorMessage = $payment->getErrorMessage();
-```
-
-### Testing
-Clone the repository and run:
-```bash
-composer install
-./vendor/bin/phpunit
-```
-
-### License
-Licensed under the [MIT License](LICENSE.md).
-
-### Support
-For issues, open a ticket on [GitHub](https://github.com/your-vendor/paypey/issues) or email support@your-vendor.com.
+**Paypey** is a production-ready, driver-based payment gateway aggregator for Laravel applications. It provides a unified, fluent API for integrating major Iranian payment gateways (Zarinpal, Mellat, Saman, Parsian, IdPay, NextPay) as well as sandbox and international gateways.
 
 ---
 
-## فارسی
-
-### معرفی
-**Paypey** یک پکیج لاراول است که برای ساده‌سازی اتصال به درگاه‌های پرداخت ایرانی طراحی شده است. این پکیج یک API تمیز و انعطاف‌پذیر برای مدیریت درخواست‌های پرداخت، تأیید تراکنش‌ها و callbackها ارائه می‌دهد.
-
-### ویژگی‌ها
-- پشتیبانی از درگاه‌های پرداخت ایرانی (مانند زرین‌پال، ملت، سامان).
-- API ساده و کاربرپسند برای شروع و تأیید تراکنش‌ها.
-- امکان انتخاب درگاه پیش‌فرض.
-- مدیریت خطاها به‌صورت جامع.
-- سازگار با لاراول نسخه‌های 8.x، 9.x و 10.x.
-
-### پیش‌نیازها
-- PHP نسخه >= 8.0
-- لاراول نسخه >= 8.0
-- Composer
-
-### نصب
-1. پکیج را از طریق Composer نصب کنید:
-   ```bash
-      composer require gcorpllc/paypey
-   ```
-2. فایل پیکربندی را منتشر کنید:
-   ```bash
-   php artisan vendor:publish --provider="Gcorpllc\Paypey\PaypeyServiceProvider"
-   ```
-   این دستور فایل `config/paypey.php` را ایجاد می‌کند.
-
-
-### پیکربندی
-فایل `config/paypey.php` را برای تنظیم درگاه‌ها ویرایش کنید. نمونه:
-
-```php
-    'default_gateway' => env('PAYPEY_DEFAULT_GATEWAY', 'zarinpal'),
-    'callbackUrl' =>  env('CALLBACK_URL', '/callback'),
-    'sandbox' => env('PAYPEY_SANDBOX', true),
-    'gateways' => [
-        'zarinpal' => [
-            'sandbox' => env('ZARINPAL_SANDBOX', false),// can be normal, sandbox, zaringate
-            'merchantId' =>  env('ZARINPAL_MERCHANT_ID', 'zarinpal'),
-            'description' => 'payment using zarinpal',
-            'currency' => env('CURRENCY', 'T'), //Can be R, T (Rial, Toman)
-        ],
-    ],
-```
-
-در فایل `.env` موارد زیر را اضافه کنید:
-
-```env
-PAYPEY_DEFAULT_GATEWAY="zarinpal"
-CALLBACK_URL="your-merchant-id"
-PAYPEY_SANDBOX=true
-```
-
-### استفاده
-#### شروع پرداخت
-```php
-use Gcorpllc\Paypey\Facades\Paypey;
-
-$payment = Paypey::driver('zarinpal')
-    ->amount(10000) // Amount in IRR
-    ->callbackUrl(route('payment.callback'))
-    ->purchase();
-
-if ($payment->isSuccessful()) {
-    return redirect($payment->getPaymentUrl());
-} else {
-    return response()->json(['error' => $payment->getErrorMessage()]);
-}
-```
-
-#### تأیید پرداخت
-```php
-use YourVendor\Paypey\Facades\Paypey;
-
-$result = Paypey::driver('zarinpal')->verify();
-
-if ($result->isSuccessful()) {
-    $transactionId = $result->getTransactionId();
-    return response()->json(['message' => 'پرداخت با موفقیت تأیید شد!', 'transaction_id' => $transactionId]);
-} else {
-    return response()->json(['error' => $result->getErrorMessage()]);
-}
-```
-
-
-### تست
-برای اجرای تست‌ها، مخزن را کلون کرده و دستورات زیر را اجرا کنید:
-```bash
-composer install
-./vendor/bin/phpunit
-```
-
-### لایسنس
-این پکیج تحت [لایسنس MIT](LICENSE.md) منتشر شده است.
-
-### پشتیبانی
-برای مشکلات یا سؤالات، یک تیکت در [GitHub](https://github.com/your-vendor/paypey/issues) باز کنید یا به support@your-vendor.com ایمیل بزنید.
-
-
+## Readme Languages
+- [English Documentation](README.md)
+- [راهنمای فارسی (Persian Documentation)](README.fa.md)
 
 ---
 
-### توضیحات
-- **ساختار**: README به دو بخش انگلیسی و فارسی تقسیم شده است تا برای کاربران بین‌المللی و ایرانی قابل استفاده باشد.
-- **جایگزینی**: نام `your-vendor` باید با نام واقعی وندور شما جایگزین شود. همچنین، لینک‌های GitHub و اطلاعات تماس باید به‌روزرسانی شوند.
-- **شخصی‌سازی**: می‌توانید درگاه‌های خاص یا قابلیت‌های اضافی پکیج خود را در بخش‌های مربوطه اضافه کنید.
-- **استاندارد**: این فایل از استانداردهای رایج README (مانند badges، ساختار واضح و مثال‌های کد) پیروی می‌کند.
+## Features
 
-اگر نیاز به تغییرات خاصی (مانند افزودن بخش‌های جدید یا تغییر لحن) دارید، لطفاً اطلاع دهید!
+- **Fluent API:** Expressive methods for payment creation and verification (`Paypey::via('zarinpal')->amount(10000)->request()`).
+- **Driver Pattern (Strategy):** Easily switch between payment drivers or extend with custom drivers via `Paypey::extend()`.
+- **Supported Gateways:**
+  - **Sandbox / Fake** (Zero network calls required for local testing)
+  - **Zarinpal** (Normal & ZarinGate)
+  - **Mellat** (BAM)
+  - **Saman** (SEP)
+  - **Parsian** (PEC)
+  - **IdPay**
+  - **NextPay**
+  - **Stripe & PayPal** (Secondary international drivers)
+- **Automatic Currency Conversion:** Seamless handling between **Toman** and **Rial**.
+- **Auto-Verification:** Automatic gateway detection on `Paypey::verify()` from HTTP request parameters or transaction history.
+- **Transaction History:** Built-in migration and `Transaction` Eloquent model with helper scopes (`successful()`, `failed()`, `pending()`).
+- **Laravel Events:** Dispatches `TransactionCreated`, `TransactionSuccessful`, and `TransactionFailed`.
+- **Testing Engine:** Built-in mocking via `Paypey::fake()`.
+
+---
+
+## Requirements
+
+- PHP `>= 8.2`
+- Laravel `>= 10.0` or `>= 11.0`
+
+---
+
+## Installation
+
+1. Install the package via Composer:
+
+```bash
+composer require gcorpllc/paypey
+```
+
+2. Publish the configuration file and database migrations:
+
+```bash
+php artisan vendor:publish --provider="Gcorpllc\Paypey\Providers\PaypeyServiceProvider"
+```
+
+3. Run migrations to create `paypey_transactions` table:
+
+```bash
+php artisan migrate
+```
+
+---
+
+## Configuration
+
+The published `config/paypey.php` allows you to set default driver, global currency unit, and gateway credentials:
+
+```php
+return [
+    'default' => env('PAYPEY_DEFAULT_GATEWAY', 'zarinpal'),
+    'currency' => env('PAYPEY_CURRENCY', 'toman'), // 'toman' or 'rial'
+    'database_logging' => env('PAYPEY_DB_LOGGING', true),
+    'sandbox' => env('PAYPEY_SANDBOX', true),
+
+    'gateways' => [
+        'zarinpal' => [
+            'merchant_id' => env('ZARINPAL_MERCHANT_ID', ''),
+            'sandbox' => env('ZARINPAL_SANDBOX', true),
+            'currency' => 'toman',
+            'mode' => 'normal', // 'normal' or 'zaringate'
+        ],
+        'mellat' => [
+            'terminal_id' => env('MELLAT_TERMINAL_ID', ''),
+            'username' => env('MELLAT_USERNAME', ''),
+            'password' => env('MELLAT_PASSWORD', ''),
+            'currency' => 'rial',
+        ],
+        // ... additional gateway configs
+    ],
+];
+```
+
+---
+
+## Usage Examples
+
+### 1. Requesting Payment
+
+```php
+use Gcorpllc\Paypey\Facades\Paypey;
+
+// Using default gateway or specific driver via via() / driver()
+$response = Paypey::via('zarinpal')
+    ->amount(10000) // Amount in global currency (Toman by default)
+    ->callbackUrl(route('payment.callback'))
+    ->description('Order #1024')
+    ->with(['order_id' => 1024, 'user_id' => 42])
+    ->request(); // purchase() is an identical alias
+
+if ($response->isSuccessful()) {
+    // Redirect user to gateway payment page
+    return $response->redirect();
+}
+
+return back()->with('error', $response->getErrorMessage());
+```
+
+### 2. Verifying Payment
+
+In your callback controller action:
+
+```php
+use Gcorpllc\Paypey\Facades\Paypey;
+use Gcorpllc\Paypey\Exceptions\VerificationFailedException;
+
+try {
+    // Auto-detects driver from request query/POST params and database
+    $receipt = Paypey::verify();
+
+    $transactionId = $receipt->getTransactionId();
+    $refId = $receipt->getRefId();
+    $cardNumber = $receipt->getCardNumber();
+
+    return view('payment.success', compact('receipt'));
+} catch (VerificationFailedException $e) {
+    return view('payment.failed', ['message' => $e->getMessage()]);
+}
+```
+
+---
+
+## Automatic Currency Conversion
+
+When `paypey.currency` is set to `'toman'`, Paypey automatically multiplies amounts by 10 before constructing request payloads for drivers expecting Rials (e.g., Mellat, Saman, Parsian, IdPay, NextPay). Receipt object values reflect original transaction amounts cleanly.
+
+---
+
+## Mocking & Testing
+
+Use `Paypey::fake()` in your unit/feature tests without contacting live HTTP endpoints:
+
+```php
+use Gcorpllc\Paypey\Facades\Paypey;
+
+public function test_checkout_flow()
+{
+    // Default success fake for all drivers
+    Paypey::fake();
+
+    $response = Paypey::via('zarinpal')->amount(5000)->request();
+    $this->assertTrue($response->isSuccessful());
+
+    $receipt = Paypey::verify(['Authority' => $response->getAuthority()]);
+    $this->assertTrue($receipt->isSuccessful());
+}
+
+public function test_failed_payment_scenario()
+{
+    Paypey::fake([
+        'zarinpal' => Paypey::fakeFailed('Card balance insufficient'),
+    ]);
+
+    $this->expectException(\Gcorpllc\Paypey\Exceptions\VerificationFailedException::class);
+
+    Paypey::via('zarinpal')->verify(['Authority' => 'INVALID_AUTH']);
+}
+```
+
+---
+
+## Adding Custom Drivers
+
+Register custom payment gateways using `Paypey::extend()`:
+
+```php
+use Gcorpllc\Paypey\Facades\Paypey;
+use Gcorpllc\Paypey\Drivers\AbstractDriver;
+
+Paypey::extend('my_custom_gateway', function ($app) {
+    return new MyCustomDriver();
+});
+```
+
+---
+
+## License
+
+The Paypey package is open-sourced software licensed under the [MIT license](LICENSE).
